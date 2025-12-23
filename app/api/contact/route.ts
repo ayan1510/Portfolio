@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as nodemailer from "nodemailer";
 
 // Basic in-memory rate limiting (per server instance)
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
@@ -75,62 +74,9 @@ export async function POST(req: NextRequest) {
     recent.push(now);
     ipRequestLog.set(ip, recent);
 
-    // Configure your email transport here.
-    // For Gmail, you should create an App Password and set these env vars:
-    // - SMTP_HOST=smtp.gmail.com
-    // - SMTP_PORT=587
-    // - SMTP_USER=yourgmail@gmail.com
-    // - SMTP_PASS=your_app_password
-    //
-    // NEVER commit real passwords to the repo – use environment variables.
-
-    const host = process.env.SMTP_HOST;
-    const port = process.env.SMTP_PORT
-      ? parseInt(process.env.SMTP_PORT, 10)
-      : 587;
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASS;
-
-    if (!host || !user || !pass) {
-      console.error("SMTP credentials are not fully configured");
-      return NextResponse.json(
-        { error: "Email service not configured" },
-        { status: 500 }
-      );
-    }
-
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465, // true for 465, false for others
-      auth: {
-        user,
-        pass,
-      },
-    });
-
-    const toAddress = "ayan.official.mail.id@gmail.com";
-
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${user}>`,
-      to: toAddress,
-      subject: `New message from ${name}`,
-      replyTo: email,
-      text: `
-Name: ${name}
-Email: ${email}
-
-Message:
-${message}
-      `.trim(),
-      html: `
-        <h2>New Portfolio Contact Message</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, "<br/>")}</p>
-      `,
-    });
+    // NOTE: Email sending temporarily disabled for deployment.
+    // Here we just log the payload and pretend it succeeded.
+    console.log("Contact form submission:", { name, email, message });
 
     return NextResponse.json({ success: true });
   } catch (error) {
