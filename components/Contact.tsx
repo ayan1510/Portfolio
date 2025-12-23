@@ -20,7 +20,7 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-  const formRef = useRef<HTMLFormElement>(null);
+  const formRef = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(formRef, { once: true, amount: 0.2 });
 
   const handleChange = (

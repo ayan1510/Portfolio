@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import * as nodemailer from "nodemailer";
 
 // Basic in-memory rate limiting (per server instance)
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
