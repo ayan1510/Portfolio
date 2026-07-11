@@ -261,7 +261,7 @@ export default function About() {
           >
             <div className="relative aspect-3/4 w-full overflow-hidden">
               <Image
-                src="/photography/IMG_4690.JPG%20(1).jpeg"
+                src="/about/IMG_4690.JPG%20(1).jpeg"
                 alt="Ayan Mondal"
                 fill
                 sizes="(min-width: 1024px) 40vw, 80vw"
