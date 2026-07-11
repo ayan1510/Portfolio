@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import Card3DTilt from "@/components/Card3DTilt";
+import SectionVideoBackground from "@/components/SectionVideoBackground";
 
 interface Skill {
   name: string;
@@ -180,6 +182,37 @@ export default function Skills() {
       ],
     },
     {
+      title: "Creative & Social Media",
+      icon: "📷",
+      color: "bg-gradient-to-r from-amber-500 via-rose-500 to-violet-500",
+      skills: [
+        {
+          name: "Photography",
+          level: 88,
+          icon: "📸",
+          description: "Composition, natural light, portraits, and lifestyle framing",
+        },
+        {
+          name: "Videography",
+          level: 85,
+          icon: "🎬",
+          description: "Shooting, B-roll capture, and visual storytelling",
+        },
+        {
+          name: "Video Editing",
+          level: 87,
+          icon: "✂️",
+          description: "Cuts, transitions, color grading, and pacing",
+        },
+        {
+          name: "Social Media Handling",
+          level: 90,
+          icon: "📲",
+          description: "Content planning, posting, engagement, and brand consistency",
+        },
+      ],
+    },
+    {
       title: "State Management",
       icon: "🔄",
       color: "bg-gradient-to-r from-orange-500 via-red-500 to-pink-500",
@@ -333,42 +366,9 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="relative py-24 px-4 sm:px-6 lg:px-8 bg-slate-950 overflow-hidden"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Animated Background Elements */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute top-20 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, 100, 0],
-            y: [0, 50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, -80, 0],
-            y: [0, -60, 0],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-      </div>
-
-      {/* Top gradient blend */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-950 via-slate-950/80 to-transparent z-0" />
-      {/* Bottom gradient blend */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent z-0" />
+      <SectionVideoBackground src="/videowork/IMG_4681%20(1).MP4" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
@@ -405,7 +405,7 @@ export default function Skills() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            A comprehensive toolkit for building modern, scalable, and performant web applications
+            A comprehensive toolkit for building modern applications and creating compelling visual content
           </motion.p>
         </motion.div>
 
@@ -414,7 +414,6 @@ export default function Skills() {
           {skillCategories.map((category, categoryIndex) => (
             <motion.div
               key={categoryIndex}
-              className="group relative overflow-hidden rounded-2xl border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-800/50 p-6 lg:p-8 backdrop-blur-sm transition-all duration-500 hover:border-sky-500/50 hover:shadow-[0_20px_60px_rgba(56,189,248,0.2)]"
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -424,42 +423,48 @@ export default function Skills() {
                 type: "spring",
                 stiffness: 100,
               }}
-              whileHover={{ scale: 1.02, y: -8 }}
+              className="h-full"
             >
-              {/* Category Header */}
-              <div className="flex items-center gap-4 mb-6">
-                <motion.div
-                  className={`text-4xl p-3 rounded-xl ${category.color} bg-opacity-20 backdrop-blur-sm`}
-                  animate={{
-                    rotate: [0, 5, -5, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  {category.icon}
-                </motion.div>
-                <h3 className="text-2xl font-bold text-slate-50">{category.title}</h3>
-              </div>
+              <Card3DTilt
+                className="group h-full relative overflow-hidden rounded-2xl border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-800/50 p-6 lg:p-8 backdrop-blur-sm shadow-md"
+                maxTilt={6}
+                scale={1.02}
+              >
+                {/* Category Header */}
+                <div className="flex items-center gap-4 mb-6">
+                  <motion.div
+                    className={`text-4xl p-3 rounded-xl ${category.color} bg-opacity-20 backdrop-blur-sm`}
+                    animate={{
+                      rotate: [0, 5, -5, 0],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    {category.icon}
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-slate-50">{category.title}</h3>
+                </div>
 
-              {/* Skills List */}
-              <div className="space-y-5">
-                {category.skills.map((skill, skillIndex) => (
-                  <SkillBar
-                    key={skillIndex}
-                    skill={skill}
-                    index={skillIndex}
-                    color={category.color}
-                  />
-                ))}
-              </div>
+                {/* Skills List */}
+                <div className="space-y-5">
+                  {category.skills.map((skill, skillIndex) => (
+                    <SkillBar
+                      key={skillIndex}
+                      skill={skill}
+                      index={skillIndex}
+                      color={category.color}
+                    />
+                  ))}
+                </div>
 
-              {/* Hover Glow Effect */}
-              <div
-                className={`absolute inset-0 ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 -z-10 blur-xl`}
-              />
+                {/* Hover Glow Effect */}
+                <div
+                  className={`absolute inset-0 ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 -z-10 blur-xl`}
+                />
+              </Card3DTilt>
             </motion.div>
           ))}
         </div>

@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import Image from "next/image";
+import { motion, useInView } from "framer-motion";
+import Card3DTilt from "@/components/Card3DTilt";
+import SectionVideoBackground from "@/components/SectionVideoBackground";
 
 interface StatCardProps {
   value: string;
@@ -47,7 +50,6 @@ function StatCard({ value, label, delay, color }: StatCardProps) {
   return (
     <motion.div
       ref={ref}
-      className="group relative overflow-hidden rounded-2xl border border-slate-800/50 bg-gradient-to-br from-slate-900/80 to-slate-800/40 p-6 text-center backdrop-blur-sm transition-all duration-500 hover:border-sky-500/50 hover:shadow-[0_20px_60px_rgba(56,189,248,0.3)]"
       initial={{ opacity: 0, y: 50, scale: 0.8 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.3 }}
@@ -57,32 +59,37 @@ function StatCard({ value, label, delay, color }: StatCardProps) {
         type: "spring",
         stiffness: 100,
       }}
-      whileHover={{ scale: 1.05, y: -8 }}
+      className="h-full"
     >
-      <div className="relative z-10">
-        <motion.div
-          className={`text-4xl font-bold mb-2 ${colorClasses[color]}`}
-          initial={{ scale: 0 }}
-          animate={isInView ? { scale: 1 } : { scale: 0 }}
-          transition={{
-            delay: delay + 0.3,
-            type: "spring",
-            stiffness: 200,
-          }}
-        >
-          {count}
-          {value.replace(/\d/g, "")}
-        </motion.div>
-        <div className="text-slate-300 font-medium">{label}</div>
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-br from-sky-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-sky-500/10 group-hover:via-purple-500/10 group-hover:to-pink-500/10 transition-all duration-500" />
+      <Card3DTilt
+        maxTilt={10}
+        scale={1.04}
+        className="group h-full relative overflow-hidden rounded-2xl border border-slate-800/50 bg-gradient-to-br from-slate-900/80 to-slate-800/40 p-6 text-center backdrop-blur-sm hover:border-sky-500/50 transition-all duration-500"
+      >
+        <div className="relative z-10">
+          <motion.div
+            className={`text-4xl font-bold mb-2 ${colorClasses[color]}`}
+            initial={{ scale: 0 }}
+            animate={isInView ? { scale: 1 } : { scale: 0 }}
+            transition={{
+              delay: delay + 0.3,
+              type: "spring",
+              stiffness: 200,
+            }}
+          >
+            {count}
+            {value.replace(/\d/g, "")}
+          </motion.div>
+          <div className="text-slate-300 font-medium">{label}</div>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-sky-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-sky-500/10 group-hover:via-purple-500/10 group-hover:to-pink-500/10 transition-all duration-500" />
+      </Card3DTilt>
     </motion.div>
   );
 }
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const textVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -114,57 +121,17 @@ export default function About() {
   const title = "About Me";
   const titleArray = title.split("");
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      videoRef.current
-        .play()
-        .catch(() => {
-          /* autoplay may fail; user can click video or unmute */
-        });
-    }
-  }, []);
-
-  // Unmute when About section is in view, mute when scrolled away
-  useEffect(() => {
-    const section = containerRef.current;
-    const video = videoRef.current;
-
-    if (!section || !video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Section is in view - unmute video
-            video.muted = false;
-          } else {
-            // Section is out of view - mute video
-            video.muted = true;
-          }
-        });
-      },
-      {
-        threshold: 0.3, // Trigger when 30% of section is visible
-      }
-    );
-
-    observer.observe(section);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
   return (
     <section
       ref={containerRef}
       id="about"
-      className="relative py-24 px-4 sm:px-6 lg:px-8 bg-slate-950 overflow-hidden"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
+      <SectionVideoBackground src="/videowork/IMG_4711.MP4" />
+
       <div className="relative z-10 mx-auto max-w-7xl">
-        <div className="grid items-start gap-10 lg:grid-cols-[1.1fr_1fr]">
-          <div className="relative">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+          <div>
             {/* Animated Title */}
             <div className="mb-12 text-left">
           <motion.h2
@@ -218,29 +185,21 @@ export default function About() {
                 variants={textVariants}
                 className="text-xl text-slate-200 font-medium"
               >
-                I'm <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-purple-400">Ayan Mondal</span>, a passionate <span className="font-semibold text-purple-400">Frontend Developer</span> from{" "}
-                <span className="font-semibold text-sky-400">Kolkata</span>, dedicated to crafting beautiful, responsive, and high-performance web experiences using modern technologies like React, Next.js, and TypeScript.
+                I&apos;m a Web Developer and Creative Strategist passionate about building digital experiences that help brands grow and connect with their audience. As the Founder of Drizzle, I work at the intersection of technology, creativity, and storytelling—creating modern websites, engaging visual content, and impactful brand experiences.
               </motion.p>
               <motion.p
                 custom={1}
                 variants={textVariants}
                 className="font-normal"
               >
-                I recently completed a <span className="font-semibold text-purple-400">3-month internship</span> as a Frontend Developer at{" "}
-                <motion.span
-                  className="font-semibold text-sky-400 inline-block"
-                  whileHover={{ scale: 1.1, x: 5 }}
-                >
-                  easy1pay.in
-                </motion.span>
-                , where I gained hands-on experience building interactive UI components, implementing responsive designs, and collaborating with cross-functional teams to deliver seamless user experiences. This experience helped me refine my skills in component architecture, state management, and performance optimization.
+                My work goes beyond development. I enjoy photography, videography, video editing, social media management, and creating content that captures attention and drives engagement. From product shoots and short-form videos to social media campaigns and brand storytelling, I focus on creating content that feels authentic and memorable.
               </motion.p>
               <motion.p
                 custom={2}
                 variants={textVariants}
                 className="font-normal"
               >
-                I'm passionate about creating intuitive interfaces that not only look great but also provide exceptional user experiences. Whether it's building dynamic dashboards, crafting smooth animations, or ensuring pixel-perfect responsiveness across devices, I approach every project with attention to detail and a commitment to writing clean, maintainable code.
+                I have a strong interest in branding, customer experience, and creative marketing ideas. Whether it&apos;s designing a website, planning content for Instagram, or developing strategies to improve online presence, I enjoy turning ideas into experiences that leave a lasting impression.
               </motion.p>
             </div>
 
@@ -292,70 +251,41 @@ export default function About() {
               </motion.div>
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-3xl border-0 bg-slate-900/70 shadow-[0_20px_80px_rgba(15,23,42,0.8)] backdrop-blur-sm">
-            <video
-              ref={videoRef}
-              className="h-full w-full object-cover"
-              src="/2b76c1cb7846ae47a877c0c81360dc06_720w.mp4"
-              autoPlay
-              loop
-              playsInline
-              muted
-            />
-            {/* Top edge blend - only hide the edge */}
-            <div 
-              className="pointer-events-none absolute top-0 left-0 right-0 h-40" 
-              style={{
-                background: 'linear-gradient(to bottom, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-            {/* Bottom edge blend - only hide the edge */}
-            <div 
-              className="pointer-events-none absolute bottom-0 left-0 right-0 h-40" 
-              style={{
-                background: 'linear-gradient(to top, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-            {/* Left edge blend - only hide the edge */}
-            <div 
-              className="pointer-events-none absolute top-0 bottom-0 left-0 w-40" 
-              style={{
-                background: 'linear-gradient(to right, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-            {/* Right edge blend - only hide the edge */}
-            <div 
-              className="pointer-events-none absolute top-0 bottom-0 right-0 w-40" 
-              style={{
-                background: 'linear-gradient(to left, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-            {/* Corner blend overlays for seamless edge transition */}
-            <div 
-              className="pointer-events-none absolute top-0 left-0 w-48 h-48" 
-              style={{
-                background: 'radial-gradient(circle at top left, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-            <div 
-              className="pointer-events-none absolute top-0 right-0 w-48 h-48" 
-              style={{
-                background: 'radial-gradient(circle at top right, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-            <div 
-              className="pointer-events-none absolute bottom-0 left-0 w-48 h-48" 
-              style={{
-                background: 'radial-gradient(circle at bottom left, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-            <div 
-              className="pointer-events-none absolute bottom-0 right-0 w-48 h-48" 
-              style={{
-                background: 'radial-gradient(circle at bottom right, rgb(2 6 23), rgb(2 6 23 / 0.9), rgb(2 6 23 / 0.6), rgb(2 6 23 / 0.3), transparent)'
-              }}
-            />
-          </div>
+
+          <motion.div
+            className="relative mx-auto w-full max-w-sm lg:max-w-md lg:mx-0 lg:ml-auto"
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <div className="relative aspect-3/4 w-full overflow-hidden">
+              <Image
+                src="/photography/IMG_4690.JPG%20(1).jpeg"
+                alt="Ayan Mondal"
+                fill
+                sizes="(min-width: 1024px) 40vw, 80vw"
+                className="object-cover object-center [mask-image:linear-gradient(to_right,transparent,black_20%,black_90%,transparent)]"
+                priority
+              />
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-slate-950 via-slate-950/60 to-slate-950/20" />
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-slate-950/90 via-transparent to-slate-950/30" />
+              <div
+                className="pointer-events-none absolute inset-0 mix-blend-soft-light opacity-40"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 30% 50%, rgb(56 189 248 / 0.15), transparent 70%)",
+                }}
+              />
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at center, transparent 30%, rgb(2 6 23 / 0.7) 100%)",
+                }}
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
       {/* Top and bottom subtle fades */}

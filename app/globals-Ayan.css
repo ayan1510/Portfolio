@@ -11,16 +11,6 @@
   letter-spacing: 0.04em;
 }
 
-/* Scroll & media performance */
-video {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-section {
-  contain: layout style paint;
-}
-
 /* Smooth scrollbar styling */
 ::-webkit-scrollbar {
   width: 10px;

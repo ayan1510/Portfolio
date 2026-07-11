@@ -41,9 +41,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${displayFont.variable} ${inter.variable} antialiased bg-slate-950 text-slate-50`}
       >
-        <div className="relative min-h-screen">{children}</div>
+        <div className="relative min-h-screen overflow-hidden">
+          <div className="pointer-events-none fixed inset-0 -z-10">
+            <div className="absolute -top-40 left-10 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl float-slow" />
+            <div className="absolute top-40 right-0 h-80 w-80 rounded-full bg-purple-500/20 blur-3xl float-medium" />
+            <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-sky-500/10 blur-3xl float-orbit" />
+          </div>
+          <div className="relative">{children}</div>
+        </div>
       </body>
     </html>
   );
 }
-

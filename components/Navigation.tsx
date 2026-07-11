@@ -6,9 +6,10 @@ export default function Navigation() {
   const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
-    const handleScroll = () => {
-      // Update active section based on scroll position
-      const sections = ["home", "projects", "about", "skills", "contact"];
+    const sections = ["home", "photography", "video-editing", "projects", "about", "skills", "contact"];
+    let ticking = false;
+
+    const updateActiveSection = () => {
       const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
@@ -21,10 +22,18 @@ export default function Navigation() {
           }
         }
       }
+      ticking = false;
     };
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Check on mount
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateActiveSection);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    updateActiveSection();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -38,6 +47,8 @@ export default function Navigation() {
 
   const navItems = [
     { id: "home", label: "Home" },
+    { id: "photography", label: "Photography" },
+    { id: "video-editing", label: "Video" },
     { id: "projects", label: "Projects" },
     { id: "about", label: "About" },
     { id: "skills", label: "Skills" },

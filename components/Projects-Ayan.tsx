@@ -3,8 +3,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import Card3DTilt from "@/components/Card3DTilt";
-import SectionVideoBackground from "@/components/SectionVideoBackground";
 
 interface Project {
   title: string;
@@ -575,9 +573,12 @@ export async function GET() {
   return (
     <section
       id="projects"
-      className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-slate-950"
     >
-      <SectionVideoBackground src="/videowork/IMG_4710.MP4" />
+      {/* Top gradient blend from previous section */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-slate-950 via-slate-950/80 to-transparent z-0" />
+      {/* Bottom gradient blend to next section */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-slate-950 via-slate-950/80 to-transparent z-0" />
       <div className="relative z-10 max-w-7xl mx-auto">
         <motion.h2
           className="font-display text-4xl sm:text-5xl font-bold text-center mb-4 text-slate-50"
@@ -694,6 +695,7 @@ export async function GET() {
               {activeProjects.map((project, index) => (
                 <motion.div
                   key={`${activeTab}-${index}`}
+                  className="group overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/70 shadow-[0_20px_80px_rgba(15,23,42,0.95)] transition-all duration-500 hover:-translate-y-3 hover:border-sky-500/60 hover:shadow-[0_30px_120px_rgba(8,47,73,1)]"
                   initial={{ opacity: 0, y: 60, scale: 0.9 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{
@@ -701,77 +703,65 @@ export async function GET() {
                     delay: index * 0.1,
                     ease: [0.25, 0.46, 0.45, 0.94],
                   }}
-                  className="h-full"
+                  whileHover={{ scale: 1.02, zIndex: 10 }}
+                  style={{ cursor: isDragging ? "grabbing" : "grab" }}
+                  onClick={() => handleProjectClick(project)}
                 >
-                  <Card3DTilt
-                    className="group h-full overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/60 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-sky-500/40"
-                    maxTilt={7}
-                    scale={1.02}
-                  >
-                    <div
-                      style={{ cursor: isDragging ? "grabbing" : "grab" }}
-                      onClick={() => handleProjectClick(project)}
-                      className="flex flex-col h-full"
-                    >
-                      <div className="relative h-52 w-full overflow-hidden">
-                        <Image
-                          src={project.image}
-                          alt={project.title}
-                          fill
-                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          loading="lazy"
-                          quality={85}
-                        />
-                        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-slate-950/80 via-slate-950/20 to-transparent opacity-80" />
-                      </div>
-                      <div className="flex flex-col gap-4 p-6 flex-1 justify-between">
-                        <div>
-                          <h3 className="text-2xl font-bold mb-2 text-slate-50">
-                            {project.title}
-                          </h3>
-                          <p className="text-slate-300 leading-relaxed line-clamp-3">
-                            {project.description}
-                          </p>
-                        </div>
-                        <div className="space-y-4">
-                          <div className="flex flex-wrap gap-2">
-                            {project.technologies.map((tech, techIndex) => (
-                              <motion.span
-                                key={techIndex}
-                                className="rounded-full bg-slate-800/80 px-3 py-1 text-sm text-sky-300"
-                                whileHover={{ scale: 1.1 }}
-                              >
-                                {tech}
-                              </motion.span>
-                            ))}
-                          </div>
-                          <div className="mt-2 flex gap-4 text-sm font-semibold">
-                            <motion.button
-                              className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
-                              whileHover={{ x: 5 }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleProjectClick(project, "overview");
-                              }}
-                            >
-                              View case study →
-                            </motion.button>
-                            <motion.button
-                              className="text-slate-400 hover:text-slate-300 hover:underline transition-colors"
-                              whileHover={{ x: 5 }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleProjectClick(project, "code");
-                              }}
-                            >
-                              View code
-                            </motion.button>
-                          </div>
-                        </div>
-                      </div>
+                  <div className="relative h-52 w-full overflow-hidden">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                      quality={85}
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-slate-950/80 via-slate-950/20 to-transparent opacity-80" />
+                  </div>
+                  <div className="flex flex-col gap-4 p-6">
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2 text-slate-50">
+                        {project.title}
+                      </h3>
+                      <p className="text-slate-300 leading-relaxed line-clamp-3">
+                        {project.description}
+                      </p>
                     </div>
-                  </Card3DTilt>
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((tech, techIndex) => (
+                        <motion.span
+                          key={techIndex}
+                          className="rounded-full bg-slate-800/80 px-3 py-1 text-sm text-sky-300"
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          {tech}
+                        </motion.span>
+                      ))}
+                    </div>
+                    <div className="mt-2 flex gap-4 text-sm font-semibold">
+                      <motion.button
+                        className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
+                        whileHover={{ x: 5 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleProjectClick(project, "overview");
+                        }}
+                      >
+                        View case study →
+                      </motion.button>
+                      <motion.button
+                        className="text-slate-400 hover:text-slate-300 hover:underline transition-colors"
+                        whileHover={{ x: 5 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleProjectClick(project, "code");
+                        }}
+                      >
+                        View code
+                      </motion.button>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
